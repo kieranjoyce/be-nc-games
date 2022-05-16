@@ -10,6 +10,15 @@ beforeEach(() => seed(testData))
 
 afterAll(() => db.end());
 
+describe('METHOD /not_a_path', () => {
+    test('404: route not found', () => {
+        return request(app).get('/not_a_path')
+        .expect(404)
+        .then(({body :{msg}}) => 
+            expect(msg).toBe('route not found'));
+    });
+});
+
 describe('GET /api/categories', () => {
     test('200: responds with array of category objects', () => {
         return request(app).get('/api/categories')
