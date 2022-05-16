@@ -11,7 +11,7 @@ beforeEach(() => seed(testData))
 afterAll(() => db.end());
 
 describe('METHOD /not_a_path', () => {
-    test('404: route not found', () => {
+    test('404: responds with msg of route not found', () => {
         return request(app).get('/not_a_path')
         .expect(404)
         .then(({body :{msg}}) => 
@@ -31,6 +31,17 @@ describe('GET /api/categories', () => {
                     description: expect.any(String)
                 })
             }
+        })
+    });
+
+    test('405: responds with msg and allowed methods if incorrect method used', () => {
+        return request(app).post('/api/categories')
+        .expect(405)
+        .then(({body}) => {
+            expect(body).toEqual({
+                msg : 'POST method not supported for this route',
+                Allow: ['GET']
+            });
         })
     });
 });
