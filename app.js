@@ -1,5 +1,7 @@
 const express = require('express');
-const { getCategories, methodNotAllowedHandler, getReview } = require('./controllers/games.controller');
+const { getCategories } = require('./controllers/categories.controller');
+const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler } = require('./controllers/errors.controller');
+const { getReview } = require('./controllers/reviews.controller');
 
 const app = express();
 
@@ -13,18 +15,8 @@ app.route('/api/reviews/:review_id')
     .get(getReview)
     .all(methodNotAllowedHandler(['GET']));
 
-app.all('/*', (req, res, next) => {
-    res.status(404).send({msg: 'route not found'})
-})
+app.all('/*', routeNotFoundHandler);
 
-app.use((err, req, res, next) => {
-    if (err.status === 405) {
-        res.status(405).send({msg: err.msg, Allow: err.Allow});
-    }
-})
-
-app.use((err, req, res, next) => {
-    res.status(500).send({msg: 'internal server error'})
-})
+app.use(internalServerErrorHandler);
 
 module.exports = app;
