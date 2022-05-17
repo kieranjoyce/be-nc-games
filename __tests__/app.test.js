@@ -34,14 +34,62 @@ describe('GET /api/categories', () => {
         })
     });
 
-    test('405: responds with msg and allowed methods if incorrect method used', () => {
-        return request(app).post('/api/categories')
-        .expect(405)
-        .then(({body}) => {
-            expect(body).toEqual({
-                msg : 'POST method not supported for this route',
-                Allow: ['GET']
-            });
+    // test('405: responds with msg and allowed methods if incorrect method used', () => {
+    //     return request(app).post('/api/categories')
+    //     .expect(405)
+    //     .then(({body}) => {
+    //         expect(body).toEqual({
+    //             msg : 'POST method not supported for this route',
+    //             Allow: ['GET']
+    //         });
+    //     })
+    // });
+});
+
+describe('GET /api/reviews/:review_id', () => {
+    test('200: responds with specified review', () => {
+        return request(app).get('/api/reviews/2')
+        .expect(200)
+        .then(({body: {review}}) => {
+            expect(review).toEqual({
+                review_id: 2,
+                title: 'Jenga',
+                designer: 'Leslie Scott',
+                owner: 'philippaclaire9',
+                review_img_url:
+                    'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                review_body: 'Fiddly fun for all the family',
+                category: 'dexterity',
+                created_at: '2021-01-18T10:01:41.251Z',
+                votes: 5
+            })
         })
     });
+
+    test('400: responds with error message when incorrect data type used', () => {
+        return request(app).get('/api/reviews/bananas')
+        .expect(400)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('invalid review_id, expecting number data type')
+        })
+    });
+
+    test('404: responds with error message when no data found for passed review_id', () => {
+        return request(app).get('/api/reviews/-2')
+        .expect(404)
+        .then(({body: {msg}}) => {
+        expect(msg).toBe('no review found for id: -2')
+    })
+    });
+
+    // test('405: responds with error message and allowed methods if invalid method used', () => {
+    //     return request(app).post('/api/reviews/4')
+    //     .expect(405)
+    //     .then(({body}) => {
+    //         expect(body).toEqual({
+    //             msg : 'POST method not supported for this route',
+    //             Allow: expect.arrayContaining(['GET'])
+    //         });
+    //     })
+    // });
 });

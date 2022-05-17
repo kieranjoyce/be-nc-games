@@ -8,3 +8,4 @@ exports.fetchCategories = () => {
             return categories;
         })
 };
+
