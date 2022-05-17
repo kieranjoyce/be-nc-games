@@ -14,3 +14,11 @@ exports.fetchReview = (review_id) => {
         }
     })
 }
+
+exports.updateReview = (review_id, inc_votes) => {
+    return db.query(`
+        UPDATE reviews
+        SET votes = votes + $2
+        WHERE review_id = $1
+    `, [review_id, inc_votes])
+}
