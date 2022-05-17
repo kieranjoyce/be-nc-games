@@ -65,4 +65,31 @@ describe('GET /api/reviews/:review_id', () => {
             })
         })
     });
+
+    test('400: responds with error message when incorrect data type used', () => {
+        return request(app).get('/api/reviews/bananas')
+        .expect(400)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('invalid review_id, expecting number data type')
+        })
+    });
+
+    test('404: responds with error message when no data found for passed review_id', () => {
+        return request(app).get('/api/reviews/-2')
+        .expect(404)
+        .then(({body: {msg}}) => {
+        expect(msg).toBe('no review found for id: -2')
+    })
+    });
+
+    test('405: responds with error message and allowed methods if invalid method used', () => {
+        return request(app).post('/api/reviews/4')
+        .expect(405)
+        .then(({body}) => {
+            expect(body).toEqual({
+                msg : 'POST method not supported for this route',
+                Allow: expect.arrayContaining(['GET'])
+            });
+        })
+    });
 });
