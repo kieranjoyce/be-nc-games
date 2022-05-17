@@ -1,4 +1,4 @@
-const { fetchReview } = require("../models/games.model");
+const { fetchReview } = require("../models/reviews.model");
 
 exports.getReview = (req, res, next) => {
     const {review_id} = req.params;
