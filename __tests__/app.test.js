@@ -34,16 +34,16 @@ describe('GET /api/categories', () => {
         })
     });
 
-    test('405: responds with msg and allowed methods if incorrect method used', () => {
-        return request(app).post('/api/categories')
-        .expect(405)
-        .then(({body}) => {
-            expect(body).toEqual({
-                msg : 'POST method not supported for this route',
-                Allow: ['GET']
-            });
-        })
-    });
+    // test('405: responds with msg and allowed methods if incorrect method used', () => {
+    //     return request(app).post('/api/categories')
+    //     .expect(405)
+    //     .then(({body}) => {
+    //         expect(body).toEqual({
+    //             msg : 'POST method not supported for this route',
+    //             Allow: ['GET']
+    //         });
+    //     })
+    // });
 });
 
 describe('GET /api/reviews/:review_id', () => {
@@ -82,14 +82,14 @@ describe('GET /api/reviews/:review_id', () => {
     })
     });
 
-    test('405: responds with error message and allowed methods if invalid method used', () => {
-        return request(app).post('/api/reviews/4')
-        .expect(405)
-        .then(({body}) => {
-            expect(body).toEqual({
-                msg : 'POST method not supported for this route',
-                Allow: expect.arrayContaining(['GET'])
-            });
-        })
-    });
+    // test('405: responds with error message and allowed methods if invalid method used', () => {
+    //     return request(app).post('/api/reviews/4')
+    //     .expect(405)
+    //     .then(({body}) => {
+    //         expect(body).toEqual({
+    //             msg : 'POST method not supported for this route',
+    //             Allow: expect.arrayContaining(['GET'])
+    //         });
+    //     })
+    // });
 });
