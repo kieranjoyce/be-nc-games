@@ -7,6 +7,10 @@ exports.fetchReview = (review_id) => {
         WHERE review_id=$1
     `, [review_id])
     .then(({rows : [review]}) => {
-        return review;
+        if (review) {
+            return review;
+        } else {
+            return Promise.reject({status: 404, msg: `no review found for id: ${review_id}`})
+        }
     })
 }
