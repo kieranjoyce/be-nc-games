@@ -9,11 +9,11 @@ app.use(express.json());
 
 app.route('/api/categories')
     .get(getCategories)
-    .all(methodNotAllowedHandler(['GET']));
+    // .all(methodNotAllowedHandler(['GET']));
 
 app.route('/api/reviews/:review_id')
     .get(getReview)
-    .all(methodNotAllowedHandler(['GET'])); //update with new method when adding
+    // .all(methodNotAllowedHandler(['GET']));
 
 app.all('/*', routeNotFoundHandler);
 
