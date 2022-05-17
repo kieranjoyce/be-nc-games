@@ -1,6 +1,6 @@
 const express = require('express');
 const { getCategories } = require('./controllers/categories.controller');
-const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler } = require('./controllers/errors.controller');
+const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler, psqlErrorHandler, customErrorHandler } = require('./controllers/errors.controller');
 const { getReview } = require('./controllers/reviews.controller');
 
 const app = express();
@@ -13,10 +13,10 @@ app.route('/api/categories')
 
 app.route('/api/reviews/:review_id')
     .get(getReview)
-    .all(methodNotAllowedHandler(['GET']));
+    .all(methodNotAllowedHandler(['GET'])); //update with new method when adding
 
 app.all('/*', routeNotFoundHandler);
 
-app.use(internalServerErrorHandler);
+app.use(psqlErrorHandler, customErrorHandler, internalServerErrorHandler);
 
 module.exports = app;
