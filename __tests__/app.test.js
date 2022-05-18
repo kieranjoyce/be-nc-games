@@ -160,3 +160,21 @@ describe('PATCH /api/reviews/:review_id', () => {
         })
     });
 });
+
+
+describe('GET /api/users', () => {
+    test('200: responds with array of user objects', () => {
+        return request(app).get('/api/users')
+        .expect(200)
+        .then(({body: {users}}) => {
+            expect(users).toHaveLength(4);
+            for (let user of users) {
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url:expect.stringContaining('https://')
+                })
+            }
+        })
+    });
+});
