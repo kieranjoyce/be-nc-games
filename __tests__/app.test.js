@@ -51,7 +51,7 @@ describe('GET /api/reviews/:review_id', () => {
         return request(app).get('/api/reviews/2')
         .expect(200)
         .then(({body: {review}}) => {
-            expect(review).toEqual({
+            expect(review).toMatchObject({
                 review_id: 2,
                 title: 'Jenga',
                 designer: 'Leslie Scott',
@@ -63,6 +63,14 @@ describe('GET /api/reviews/:review_id', () => {
                 created_at: '2021-01-18T10:01:41.251Z',
                 votes: 5
             })
+        })
+    });
+
+    test('200: review object has commentCount property of number of comments with that review_id', () => {
+        return request(app).get('/api/reviews/2')
+        .expect(200)
+        .then(({body: {review}}) => {
+            expect(review).toHaveProperty('comment_count', 3);
         })
     });
 
