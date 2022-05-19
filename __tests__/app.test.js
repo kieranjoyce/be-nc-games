@@ -47,7 +47,7 @@ describe('GET /api/categories', () => {
     // });
 });
 
-describe('GET /api/reviews', () => {
+describe.only('GET /api/reviews', () => {
     test('200: responds with array of review objects', () => {
         return request(app).get('/api/reviews')
         .expect(200)
@@ -82,15 +82,60 @@ describe('GET /api/reviews', () => {
         })
     });
 
-    test('200: reviews array should be ordered by date in descending order', () => {
-        const sortDatesDesc = (a, b) => {
-            return new Date(b) - new Date(a);
-        }
-        
+    test('200: reviews array should be ordered by date in descending order by default', () => {        
         return request(app).get('/api/reviews')
         .expect(200)
         .then(({body : {reviews}}) => {
-            expect(reviews).toBeSortedBy('created_at', {compare: sortDatesDesc})
+            expect(reviews).toBeSortedBy('created_at', {descending: true})
+        })
+    });
+
+    test('200: reviews array should be sorted by column name passed under sort_by query, in descending order by default', () => {
+        return request(app).get('/api/reviews?sort_by=votes')
+        .expect(200)
+        .then(({body : {reviews}}) => {
+            expect(reviews).toBeSortedBy('votes', { descending : true})
+        })
+    });
+
+    test('200: reviews array should be sorted in order specified by order query', () => {
+        return request(app).get('/api/reviews?order=asc')
+        .expect(200)
+        .then(({body : {reviews}}) => {
+            expect(reviews).toBeSortedBy('created_at')
+        })
+    });
+
+    test('200: reviews array should be filtered by specified category if category query passed', () => {
+        return request(app).get('/api/reviews?category=social_deduction')
+        .expect(200)
+        .then(({body : { reviews }}) => {
+            expect(reviews).toHaveLength(11);
+            for (let review of reviews) {
+                expect(review).toHaveProperty('category', 'social deduction');
+            }
+        })
+    });
+
+    test('200: queries show expected behaviour when chained together', () => {
+        return request(app).get('/api/reviews?sort_by=review_id&order=asc&category=social_deduction')
+        .expect(200)
+        .then(({body : { reviews }}) => {
+            expect(reviews).toHaveLength(11);
+            expect(reviews).toBeSortedBy('review_id')
+            for (let review of reviews) {
+                expect(review).toMatchObject({
+                    review_id: expect.any(Number),
+                    title: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_img_url: expect.stringContaining('https://'),
+                    review_body: expect.any(String),
+                    category: 'social deduction',
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                })
+            }
         })
     });
 });
