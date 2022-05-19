@@ -218,6 +218,49 @@ describe('PATCH /api/reviews/:review_id', () => {
     });
 });
 
+describe('GET /api/reviews/:review_id/comments', () => {
+    test('200: returns comments array with correct review_id property', () => {
+        return request(app).get('/api/reviews/3/comments')
+        .expect(200)
+        .then(({body: {comments}}) => {
+            expect(comments).toHaveLength(3);
+            for(let comment of comments) {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    body : expect.any(String),
+                    review_id : 3,
+                    author : expect.any(String),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String)
+                })
+            }
+        })
+    }); 
+
+    test('404: responds with error message if passed review_id that does not correspond to a review', () => {
+        return request(app).get('/api/reviews/60/comments')
+        .expect(404)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('no review found for id: 60')
+        });
+    });
+
+    test('400: responds with error message when invalid data type for review_id', () => {
+        return request(app).get('/api/reviews/bananas/comments')
+        .expect(400)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('invalid data type')
+        })
+    });
+
+    test('200: responds with empty array if passed review_id corresponds to a review with no comments', () => {
+        return request(app).get('/api/reviews/4/comments')
+        .expect(200)
+        .then(({body : {comments}}) => {
+            expect(comments).toEqual([]);
+        })
+    });
+});
 
 describe('GET /api/users', () => {
     test('200: responds with array of user objects', () => {
