@@ -5,7 +5,6 @@ const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
 const seed = require('../db/seeds/seed');
-require('jest-sorted')
 
 beforeEach(() => seed(testData))
 
@@ -45,54 +44,6 @@ describe('GET /api/categories', () => {
     //         });
     //     })
     // });
-});
-
-describe('GET /api/reviews', () => {
-    test('200: responds with array of review objects', () => {
-        return request(app).get('/api/reviews')
-        .expect(200)
-        .then(({body : {reviews}}) => {
-            expect(reviews).toHaveLength(13);
-            for(let review of reviews) {
-                expect(review).toMatchObject({
-                    review_id: expect.any(Number),
-                    title: expect.any(String),
-                    designer: expect.any(String),
-                    owner: expect.any(String),
-                    review_img_url: expect.stringContaining('https://'),
-                    review_body: expect.any(String),
-                    category: expect.any(String),
-                    created_at: expect.any(String),
-                    votes: expect.any(Number),
-                })
-            }
-        })
-    });
-
-    test('200: review objects have comment_count property', () => {
-        return request(app).get('/api/reviews')
-        .expect(200)
-        .then(({body : {reviews}}) => {
-            expect(reviews).toHaveLength(13);
-            for(let review of reviews) {
-                expect(review).toMatchObject({
-                    comment_count: expect.any(Number),
-                })
-            }
-        })
-    });
-
-    test('200: reviews array should be ordered by date in descending order', () => {
-        const sortDatesDesc = (a, b) => {
-            return new Date(b) - new Date(a);
-        }
-        
-        return request(app).get('/api/reviews')
-        .expect(200)
-        .then(({body : {reviews}}) => {
-            expect(reviews).toBeSortedBy('created_at', {compare: sortDatesDesc})
-        })
-    });
 });
 
 describe('GET /api/reviews/:review_id', () => {

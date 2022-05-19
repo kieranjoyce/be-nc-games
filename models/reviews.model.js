@@ -32,18 +32,4 @@ exports.updateReview = (review_id, inc_votes) => {
             return Promise.reject({status: 404, msg: `no review found for id: ${review_id}`})
         }
     })
-};
-
-exports.fetchReviews = () => {
-    return db.query(
-        `
-        SELECT reviews.*, COUNT(comments.comment_id)::INT AS comment_count
-        FROM reviews LEFT JOIN comments 
-        ON reviews.review_id = comments.review_id
-        GROUP BY reviews.review_id
-        ORDER BY created_at DESC;
-    `)
-    .then(({rows : reviews}) => {
-        return reviews;
-    })
 }
