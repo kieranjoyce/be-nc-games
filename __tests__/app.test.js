@@ -297,6 +297,15 @@ describe('POST /api/reviews/:review_id/comments', () => {
         });
     });
 
+    test('400: responds with error message if passed review_id is wrong data type', () => {
+        return request(app).post('/api/reviews/bananas/comments')
+        .send({username: 'mallionaire', body: 'never heard of it before'})
+        .expect(400)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('invalid data type')
+        });
+    });
+
     test('404: responds with err msg if user not in the database tries to post', () => {
         return request(app).post('/api/reviews/4/comments')
         .send({username: 'definitelyNotAHacker', body: 'DROP DATABASE IF EXISTS be-nc-games;???'})
