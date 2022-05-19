@@ -1,7 +1,7 @@
 const express = require('express');
 const { getCategories } = require('./controllers/categories.controller');
 const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler, psqlErrorHandler, customErrorHandler } = require('./controllers/errors.controller');
-const { getReview, patchReview, getReviews, getComments } = require('./controllers/reviews.controller');
+const { getReview, patchReview, getReviews, getComments, postComment } = require('./controllers/reviews.controller');
 const { getUsers } = require('./controllers/users.controller');
 
 const app = express();
@@ -22,6 +22,7 @@ app.route('/api/reviews/:review_id')
 
 app.route('/api/reviews/:review_id/comments')
     .get(getComments)
+    .post(postComment)
 
 app.route('/api/users')
     .get(getUsers)

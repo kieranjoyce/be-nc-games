@@ -1,4 +1,4 @@
-const { fetchReview, updateReview, fetchReviews, fetchComments } = require("../models/reviews.model");
+const { fetchReview, updateReview, fetchReviews, fetchComments, addComment } = require("../models/reviews.model");
 
 exports.getReview = (req, res, next) => {
     const {review_id} = req.params;
@@ -52,4 +52,28 @@ exports.getComments = (req, res, next) => {
         .catch(err => {
             next(err);
         })
+}
+
+exports.postComment = (req, res, next) => {
+    const {review_id} = req.params;
+    const {username, body} = req.body;
+
+    addComment(review_id, username, body)
+        .then((comment) => {
+            res.status(201).send({comment});
+        })
+        .catch(err => {
+            if (err.code === '23503' && err.detail.includes('review_id')) {
+                err.msg = `no review found for id: ${review_id}`
+            } 
+            
+            else if (err.code === '23503' && err.detail.includes('author')) {
+                err.msg = 'username is not recognised';
+            } 
+            
+            else if (err.code === '23502') {
+                err.msg = 'comment must include username and body keys';
+            }
+            next(err);
+        });
 }
