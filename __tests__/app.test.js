@@ -262,6 +262,51 @@ describe('GET /api/reviews/:review_id/comments', () => {
     });
 });
 
+describe('POST /api/reviews/:review_id/comments', () => {
+    test('201: responds with new comment object', () => {
+        return request(app).post('/api/reviews/4/comments')
+        .send({username: 'mallionaire', body: 'never heard of it before'})
+        .expect(201)
+        .then(({body : {comment}}) => {
+            expect(comment).toMatchObject({
+                comment_id: expect.any(Number),
+                body : 'never heard of it before',
+                review_id : 4,
+                author : 'mallionaire',
+                votes: 0,
+                created_at: expect.any(String)
+            })
+        })
+    });
+    
+    test('400: responds with error message if req body does not contain required keys', () => {
+        return request(app).post('/api/reviews/4/comments')
+        .send({username: 'mallionaire'})
+        .expect(400)
+        .then(({body : { msg } }) => {
+            expect(msg).toBe('comment must include username and body keys')
+        })
+    });
+
+    test('404: responds with error message if passed review_id that does not correspond to a review', () => {
+        return request(app).post('/api/reviews/60/comments')
+        .send({username: 'mallionaire', body: 'never heard of it before'})
+        .expect(404)
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('no review found for id: 60')
+        });
+    });
+
+    test('404: responds with err msg if user not in the database tries to post', () => {
+        return request(app).post('/api/reviews/4/comments')
+        .send({username: 'definitelyNotAHacker', body: 'DROP DATABASE IF EXISTS be-nc-games;???'})
+        .expect(404)
+        .then(({body : {msg}}) => {
+            expect(msg).toBe('username is not recognised')
+        })
+    });
+});
+
 describe('GET /api/users', () => {
     test('200: responds with array of user objects', () => {
         return request(app).get('/api/users')
