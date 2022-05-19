@@ -1,7 +1,7 @@
 const express = require('express');
 const { getCategories } = require('./controllers/categories.controller');
 const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler, psqlErrorHandler, customErrorHandler } = require('./controllers/errors.controller');
-const { getReview, patchReview, getReviews } = require('./controllers/reviews.controller');
+const { getReview, patchReview, getReviews, getComments } = require('./controllers/reviews.controller');
 const { getUsers } = require('./controllers/users.controller');
 
 const app = express();
@@ -19,6 +19,9 @@ app.route('/api/reviews/:review_id')
     .get(getReview)
     .patch(patchReview);
     // .all(methodNotAllowedHandler(['GET']));
+
+app.route('/api/reviews/:review_id/comments')
+    .get(getComments)
 
 app.route('/api/users')
     .get(getUsers)
