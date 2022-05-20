@@ -393,6 +393,29 @@ describe('POST /api/reviews/:review_id/comments', () => {
     });
 });
 
+describe('DELETE /api/comments/:comment_id', () => {
+    test('204: responds with no content ', () => {
+        return request(app).delete('/api/comments/2')
+        .expect(204);
+    });
+
+    test('404: comment not found', () => {
+        return request(app).delete('/api/comments/872')
+        .expect(404)
+        .then(({ body : { msg }}) => {
+            expect(msg).toBe('no comment found for id: 872')
+        })
+    });
+
+    test('400: comment_id is not a number', () => {
+        return request(app).delete('/api/comments/bananas')
+        .expect(400)
+        .then(({body : { msg }}) => {
+            expect(msg).toBe('invalid data type')
+        })
+    });
+});
+
 describe('GET /api/users', () => {
     test('200: responds with array of user objects', () => {
         return request(app).get('/api/users')
