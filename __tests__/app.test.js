@@ -47,7 +47,7 @@ describe('GET /api/categories', () => {
     // });
 });
 
-describe.only('GET /api/reviews', () => {
+describe('GET /api/reviews', () => {
     test('200: responds with array of review objects', () => {
         return request(app).get('/api/reviews')
         .expect(200)
@@ -136,6 +136,30 @@ describe.only('GET /api/reviews', () => {
                     votes: expect.any(Number),
                 })
             }
+        })
+    });
+
+    test('400: invalid sort_by query', () => {
+        return request(app).get('/api/reviews?sort_by=bananas')
+        .expect(400)
+        .then(({body : {msg}}) => {
+            expect(msg).toBe('invalid sort_by query');
+        })
+    });
+
+    test('400: invalid order query', () => {
+        return request(app).get('/api/reviews?order=bananas')
+        .expect(400)
+        .then(({body : {msg}}) => {
+            expect(msg).toBe('invalid order query');
+        })
+    });
+
+    test('404: non-existent category', () => {
+        return request(app).get('/api/reviews?category=bananas')
+        .expect(404)
+        .then(({body : { msg }}) => {
+            expect(msg).toBe('category not found');
         })
     });
 });
