@@ -1,3 +1,4 @@
+const { fetchCategories } = require("../models/categories.model");
 const { fetchReview, updateReview, fetchReviews, fetchComments, addComment } = require("../models/reviews.model");
 
 exports.getReview = (req, res, next) => {
@@ -31,12 +32,29 @@ exports.patchReview = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-    const { sort_by, order, category } = req.query; 
-    fetchReviews(sort_by, order, category)
-        .then((reviews) => {
+    let { sort_by, order, category } = req.query; 
+
+    const promises = [];
+
+    if (category) {
+        category = category.split('_').join(' ');
+        let categoryExists = fetchCategories().then((categories) => {
+            if (categories.filter(categoryObj => categoryObj.slug === category).length === 0) {
+                return Promise.reject({status: 404, msg: 'category not found'})
+            }
+        })
+        promises.push(categoryExists)
+    }
+
+    promises.unshift(fetchReviews(sort_by, order, category))
+
+    Promise.all(promises)
+        .then(([reviews]) => {
             res.status(200).send({reviews});
         })
-        .catch(next)
+        .catch(err => {
+            next(err)
+        })
 }
 
 exports.getComments = (req, res, next) => {
