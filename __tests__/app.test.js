@@ -393,6 +393,13 @@ describe('POST /api/reviews/:review_id/comments', () => {
     });
 });
 
+describe.only('DELETE /api/comments/:comment_id', () => {
+    test('204: responds with no content ', () => {
+        return request(app).delete('/api/comments/2')
+        .expect(204);
+    });
+});
+
 describe('GET /api/users', () => {
     test('200: responds with array of user objects', () => {
         return request(app).get('/api/users')
