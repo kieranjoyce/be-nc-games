@@ -47,19 +47,22 @@ exports.fetchReviews = (sort_by='created_at', order='desc', category) => {
     `
 
     if(category) {
-        const categoryWithSpaces = category.split('_').join(' ');
         queryStr += ' WHERE category = $1'
-        queryVals.push(categoryWithSpaces);
+        queryVals.push(category);
     }
 
     queryStr += ' GROUP BY reviews.review_id'
 
     if (validSortBy.includes(sort_by)) {
         queryStr += ` ORDER BY ${sort_by} `
+    } else {
+        return Promise.reject({status: 400, msg: 'invalid sort_by query'})
     }
 
     if (validOrder.includes(order.toLowerCase())) {
         queryStr += order.toUpperCase();
+    } else {
+        return Promise.reject({status: 400, msg: 'invalid order query'})
     }
 
     return db.query(queryStr, queryVals)
