@@ -139,6 +139,14 @@ describe('GET /api/reviews', () => {
         })
     });
 
+    test('200: valid category query but no reviews', () => {
+        return request(app).get('/api/reviews?category=children\'s games')
+        .expect(200)
+        .then(({ body : {reviews} }) => {
+            expect(reviews).toEqual([])
+        })
+    })
+
     test('400: invalid sort_by query', () => {
         return request(app).get('/api/reviews?sort_by=bananas')
         .expect(400)
