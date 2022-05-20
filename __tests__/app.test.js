@@ -20,6 +20,144 @@ describe('METHOD /not_a_path', () => {
     });
 });
 
+describe('GET /api', () => {
+    test('200: responds with JSON describing all the available endpoints', () => {
+        return request(app).get('/api')
+        .expect(200)
+        .then(({ body : { endpoints } }) => {
+            expect(endpoints).toBe(`{
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/categories": {
+    "description": "serves an array of all categories",
+    "queries": [],
+    "exampleResponse": {
+      "categories": [
+        {
+          "description": "Players attempt to uncover each other's hidden role",
+          "slug": "Social deduction"
+        }
+      ]
+    }
+  },
+  "GET /api/reviews": {
+    "description": "serves an array of all reviews",
+    "queries": ["category", "sort_by", "order"],
+    "exampleResponse": {
+      "reviews": [
+        {
+          "review_id": 3,
+          "title": "One Night Ultimate Werewolf",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "category": "social deduction",
+          "created_at": 1610964101251,
+          "votes": 5
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "serves a single review object with given review_id",
+    "parameters": ["review_id"],
+    "queries": [],
+    "exampleResponse": {
+      "review": {
+          "review_id": 3,
+          "title": "One Night Ultimate Werewolf",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "category": "hidden-roles",
+          "created_at": 1610964101251,
+          "votes": 5
+        }
+    }
+  },
+  "PATCH /api/reviews/:review_id": {
+    "description": "increments votes property for specified review by number given in request body and serves updated review object",
+    "parameters": ["review_id"],
+    "queries": [],
+    "exampleRequest": {"inc_votes": 2},
+    "exampleResponse": {
+      "reviews": [
+        {
+          "title": "One Night Ultimate Werewolf",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "category": "hidden-roles",
+          "created_at": 1610964101251,
+          "votes": 17
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "serves array of all comments on specified review",
+    "parameters": ["review_id"],
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "body" : "I loved this game too!",
+          "review_id" : 3,
+          "author" : "bainesface",
+          "votes": 16,
+          "created_at": "2022-05-20T12:04:14.500Z"
+        }
+      ]
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "adds provided comment to database with review_id property specified and serves the comment back",
+    "parameters": ["review_id"],
+    "queries": [],
+    "exampleRequest": {
+      "username": "bainesface", 
+      "body": "I loved this game too!"
+    },
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 6,
+          "body" : "I loved this game too!",
+          "review_id" : 3,
+          "author" : "bainesface",
+          "votes": 0,
+          "created_at": "2022-05-20T12:04:14.500Z"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes specified comment from the database",
+    "parameters": ["comment_id"],
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description":"serves an array of all users",
+    "queries": [],
+    "exampleResponse": [
+      {
+      "username": "mallionaire",
+      "name": "haz",
+      "avatar_url":
+        "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    ]
+  }
+}
+`
+	)
+        })
+    });
+});
+
 describe('GET /api/categories', () => {
     test('200: responds with array of category objects', () => {
         return request(app).get('/api/categories')

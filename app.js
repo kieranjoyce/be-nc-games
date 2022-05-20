@@ -1,4 +1,5 @@
 const express = require('express');
+const { getEndpoints } = require('./controllers/api.controller');
 const { getCategories } = require('./controllers/categories.controller');
 const { deleteComment } = require('./controllers/comments.controller');
 const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler, psqlErrorHandler, customErrorHandler } = require('./controllers/errors.controller');
@@ -8,6 +9,9 @@ const { getUsers } = require('./controllers/users.controller');
 const app = express();
 
 app.use(express.json());
+
+app.route('/api')
+    .get(getEndpoints)
 
 app.route('/api/categories')
     .get(getCategories)
