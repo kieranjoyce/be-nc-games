@@ -393,7 +393,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
     });
 });
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
     test('204: responds with no content ', () => {
         return request(app).delete('/api/comments/2')
         .expect(204);
