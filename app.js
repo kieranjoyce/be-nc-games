@@ -5,8 +5,12 @@ const { deleteComment } = require('./controllers/comments.controller');
 const { methodNotAllowedHandler, routeNotFoundHandler, internalServerErrorHandler, psqlErrorHandler, customErrorHandler } = require('./controllers/errors.controller');
 const { getReview, patchReview, getReviews, getComments, postComment } = require('./controllers/reviews.controller');
 const { getUsers } = require('./controllers/users.controller');
+const cors = require('cors')
+
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
