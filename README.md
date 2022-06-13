@@ -14,15 +14,21 @@ Finally, the project is hosted as a heroku app with access to a production datab
 
 ## 1. Clone repository down to local machine
 
-In your shell, run following command inside the desired parent directory of the repo \
-`git clone https://github.com/kieranjoyce/be-nc-games.git`
+In your shell, run following command inside the desired parent directory of the repo
+```
+git clone https://github.com/kieranjoyce/be-nc-games.git
+```
 
 ## 2. Install project dependencies
 
-Change directory into the repo directory \
-`cd be-nc-games` \
-install dependencies with node package manager \
-`npm install`
+Change directory into the repo directory
+```
+cd be-nc-games
+````
+install dependencies with node package manager 
+```
+npm install
+```
 
 ## 3. Set PGDATABASE environment variable
 
@@ -33,24 +39,32 @@ Create 2 files:
 
 Inside these files, set PGDATABASE environment variable to your test and development databases, respectively, with the following syntax:
 
-// inside .env.test: \
-`PGDATABASE=nc_games_test`
+// inside .env.test:
+```
+PGDATABASE=nc_games_test
+```
 
-// inside .env.development:\
-`PGDATABASE=nc_games`
+// inside .env.development:
+```
+PGDATABASE=nc_games
+```
 
 an example is shown in the .env-example file
 
 ## 4. Setup local databases
 
-Run the following script in your shell to create the test and development databases:\
-`npm run setup-dbs`
+Run the following script in your shell to create the test and development databases:
+```
+npm run setup-dbs
+```
 
 ## 5. Seed development database
 
-To seed the development database with initial data, run:\
-`npm run seed`\
-'development' should be logged to the console during execution of this command
+To seed the development database with initial data, run:
+```
+npm run seed
+```
+'development' should be logged to the console during successful execution of this command
 
 ## development uses
 
