@@ -16,7 +16,7 @@ describe('METHOD /not_a_path', () => {
         return request(app).get('/not_a_path')
         .expect(404)
         .then(({body :{msg}}) => 
-            expect(msg).toBe('route not found'));
+        expect(msg).toBe('route not found'));
     });
 });
 
@@ -25,278 +25,149 @@ describe('GET /api', () => {
         return request(app).get('/api')
         .expect(200)
         .then(({ body : { endpoints } }) => {
-            expect(endpoints).toBe(`{
-    "GET /api": {
-        "description": "serves up a json representation of all the available endpoints of the api"
-    },
-    "GET /api/categories": {
-        "description": "serves an array of all categories",
-        "queries": [],
-        "exampleResponse": {
-            "categories": [
-                {
-                    "description": "Players attempt to uncover each other's hidden role",
-                    "slug": "Social deduction"
+            expect(endpoints).toEqual({
+                "GET /api": {
+                    "description": "serves up a json representation of all the available endpoints of the api"
+                },
+                "GET /api/categories": {
+                    "description": "serves an array of all categories",
+                    "queries": [],
+                    "exampleResponse": {
+                        "categories": [
+                            {
+                                "description": "Players attempt to uncover each other's hidden role",
+                                "slug": "Social deduction"
+                            }
+                        ]
+                    }
+                },
+                "GET /api/reviews": {
+                    "description": "serves an array of all reviews",
+                    "queries": [
+                        "category",
+                        "sort_by",
+                        "order"
+                    ],
+                    "exampleResponse": {
+                        "reviews": [
+                            {
+                                "review_id": 3,
+                                "title": "One Night Ultimate Werewolf",
+                                "designer": "Akihisa Okui",
+                                "owner": "happyamy2016",
+                                "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                                "category": "social deduction",
+                                "created_at": 1610964101251,
+                                "votes": 5
+                            }
+                        ]
+                    }
+                },
+                "GET /api/reviews/:review_id": {
+                    "description": "serves a single review object with given review_id",
+                    "parameters": [
+                        "review_id"
+                    ],
+                    "queries": [],
+                    "exampleResponse": {
+                        "review": {
+                            "review_id": 3,
+                            "title": "One Night Ultimate Werewolf",
+                            "designer": "Akihisa Okui",
+                            "owner": "happyamy2016",
+                            "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                            "category": "hidden-roles",
+                            "created_at": 1610964101251,
+                            "votes": 5
+                        }
+                    }
+                },
+                "PATCH /api/reviews/:review_id": {
+                    "description": "increments votes property for specified review by number given in request body and serves updated review object",
+                    "parameters": [
+                        "review_id"
+                    ],
+                    "queries": [],
+                    "exampleRequest": {
+                        "inc_votes": 2
+                    },
+                    "exampleResponse": {
+                        "reviews": [
+                            {
+                                "title": "One Night Ultimate Werewolf",
+                                "designer": "Akihisa Okui",
+                                "owner": "happyamy2016",
+                                "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                                "category": "hidden-roles",
+                                "created_at": 1610964101251,
+                                "votes": 17
+                            }
+                        ]
+                    }
+                },
+                "GET /api/reviews/:review_id/comments": {
+                    "description": "serves array of all comments on specified review",
+                    "parameters": [
+                        "review_id"
+                    ],
+                    "queries": [],
+                    "exampleResponse": {
+                        "comments": [
+                            {
+                                "comment_id": 1,
+                                "body": "I loved this game too!",
+                                "review_id": 3,
+                                "author": "bainesface",
+                                "votes": 16,
+                                "created_at": "2022-05-20T12:04:14.500Z"
+                            }
+                        ]
+                    }
+                },
+                "POST /api/reviews/:review_id/comments": {
+                    "description": "adds provided comment to database with review_id property specified and serves the comment back",
+                    "parameters": [
+                        "review_id"
+                    ],
+                    "queries": [],
+                    "exampleRequest": {
+                        "username": "bainesface",
+                        "body": "I loved this game too!"
+                    },
+                    "exampleResponse": {
+                        "comment": [
+                            {
+                                "comment_id": 6,
+                                "body": "I loved this game too!",
+                                "review_id": 3,
+                                "author": "bainesface",
+                                "votes": 0,
+                                "created_at": "2022-05-20T12:04:14.500Z"
+                            }
+                        ]
+                    }
+                },
+                "DELETE /api/comments/:comment_id": {
+                    "description": "deletes specified comment from the database",
+                    "parameters": [
+                        "comment_id"
+                    ],
+                    "queries": [],
+                    "exampleResponse": {}
+                },
+                "GET /api/users": {
+                    "description": "serves an array of all users",
+                    "queries": [],
+                    "exampleResponse": [
+                        {
+                            "username": "mallionaire",
+                            "name": "haz",
+                            "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+                        }
+                    ]
                 }
-            ]
-        }
-    },
-    "GET /api/reviews": {
-        "description": "serves an array of all reviews",
-        "queries": [
-            "category",
-            "sort_by",
-            "order"
-        ],
-        "exampleResponse": {
-            "reviews": [
-                {
-                    "review_id": 3,
-                    "title": "One Night Ultimate Werewolf",
-                    "designer": "Akihisa Okui",
-                    "owner": "happyamy2016",
-                    "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-                    "category": "social deduction",
-                    "created_at": 1610964101251,
-                    "votes": 5
-                }
-            ]
-        }
-    },
-    "GET /api/reviews/:review_id": {
-        "description": "serves a single review object with given review_id",
-        "parameters": [
-            "review_id"
-        ],
-        "queries": [],
-        "exampleResponse": {
-            "review": {
-                "review_id": 3,
-                "title": "One Night Ultimate Werewolf",
-                "designer": "Akihisa Okui",
-                "owner": "happyamy2016",
-                "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-                "category": "hidden-roles",
-                "created_at": 1610964101251,
-                "votes": 5
             }
-        }
-    },
-    "PATCH /api/reviews/:review_id": {
-        "description": "increments votes property for specified review by number given in request body and serves updated review object",
-        "parameters": [
-            "review_id"
-        ],
-        "queries": [],
-        "exampleRequest": {
-            "inc_votes": 2
-        },
-        "exampleResponse": {
-            "reviews": [
-                {
-                    "title": "One Night Ultimate Werewolf",
-                    "designer": "Akihisa Okui",
-                    "owner": "happyamy2016",
-                    "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-                    "category": "hidden-roles",
-                    "created_at": 1610964101251,
-                    "votes": 17
-                }
-            ]
-        }
-    },
-    "GET /api/reviews/:review_id/comments": {
-        "description": "serves array of all comments on specified review",
-        "parameters": [
-            "review_id"
-        ],
-        "queries": [],
-        "exampleResponse": {
-            "comments": [
-                {
-                    "comment_id": 1,
-                    "body": "I loved this game too!",
-                    "review_id": 3,
-                    "author": "bainesface",
-                    "votes": 16,
-                    "created_at": "2022-05-20T12:04:14.500Z"
-                }
-            ]
-        }
-    },
-    "POST /api/reviews/:review_id/comments": {
-        "description": "adds provided comment to database with review_id property specified and serves the comment back",
-        "parameters": [
-            "review_id"
-        ],
-        "queries": [],
-        "exampleRequest": {
-            "username": "bainesface",
-            "body": "I loved this game too!"
-        },
-        "exampleResponse": {
-            "comment": [
-                {
-                    "comment_id": 6,
-                    "body": "I loved this game too!",
-                    "review_id": 3,
-                    "author": "bainesface",
-                    "votes": 0,
-                    "created_at": "2022-05-20T12:04:14.500Z"
-                }
-            ]
-        }
-    },
-    "DELETE /api/comments/:comment_id": {
-        "description": "deletes specified comment from the database",
-        "parameters": [
-            "comment_id"
-        ],
-        "queries": [],
-        "exampleResponse": {}
-    },
-    "GET /api/users": {
-        "description": "serves an array of all users",
-        "queries": [],
-        "exampleResponse": [
-            {
-                "username": "mallionaire",
-                "name": "haz",
-                "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-            }
-        ]
-    }
-}
-`
-//                 `{
-//   "GET /api": {
-//     "description": "serves up a json representation of all the available endpoints of the api"
-//   },
-//   "GET /api/categories": {
-//     "description": "serves an array of all categories",
-//     "queries": [],
-//     "exampleResponse": {
-//       "categories": [
-//         {
-//           "description": "Players attempt to uncover each other's hidden role",
-//           "slug": "Social deduction"
-//         }
-//       ]
-//     }
-//   },
-//   "GET /api/reviews": {
-//     "description": "serves an array of all reviews",
-//     "queries": ["category", "sort_by", "order"],
-//     "exampleResponse": {
-//       "reviews": [
-//         {
-//           "review_id": 3,
-//           "title": "One Night Ultimate Werewolf",
-//           "designer": "Akihisa Okui",
-//           "owner": "happyamy2016",
-//           "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//           "category": "social deduction",
-//           "created_at": 1610964101251,
-//           "votes": 5
-//         }
-//       ]
-//     }
-//   },
-//   "GET /api/reviews/:review_id": {
-//     "description": "serves a single review object with given review_id",
-//     "parameters": ["review_id"],
-//     "queries": [],
-//     "exampleResponse": {
-//       "review": {
-//           "review_id": 3,
-//           "title": "One Night Ultimate Werewolf",
-//           "designer": "Akihisa Okui",
-//           "owner": "happyamy2016",
-//           "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//           "category": "hidden-roles",
-//           "created_at": 1610964101251,
-//           "votes": 5
-//         }
-//     }
-//   },
-//   "PATCH /api/reviews/:review_id": {
-//     "description": "increments votes property for specified review by number given in request body and serves updated review object",
-//     "parameters": ["review_id"],
-//     "queries": [],
-//     "exampleRequest": {"inc_votes": 2},
-//     "exampleResponse": {
-//       "reviews": [
-//         {
-//           "title": "One Night Ultimate Werewolf",
-//           "designer": "Akihisa Okui",
-//           "owner": "happyamy2016",
-//           "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//           "category": "hidden-roles",
-//           "created_at": 1610964101251,
-//           "votes": 17
-//         }
-//       ]
-//     }
-//   },
-//   "GET /api/reviews/:review_id/comments": {
-//     "description": "serves array of all comments on specified review",
-//     "parameters": ["review_id"],
-//     "queries": [],
-//     "exampleResponse": {
-//       "comments": [
-//         {
-//           "comment_id": 1,
-//           "body" : "I loved this game too!",
-//           "review_id" : 3,
-//           "author" : "bainesface",
-//           "votes": 16,
-//           "created_at": "2022-05-20T12:04:14.500Z"
-//         }
-//       ]
-//     }
-//   },
-//   "POST /api/reviews/:review_id/comments": {
-//     "description": "adds provided comment to database with review_id property specified and serves the comment back",
-//     "parameters": ["review_id"],
-//     "queries": [],
-//     "exampleRequest": {
-//       "username": "bainesface", 
-//       "body": "I loved this game too!"
-//     },
-//     "exampleResponse": {
-//       "comment": [
-//         {
-//           "comment_id": 6,
-//           "body" : "I loved this game too!",
-//           "review_id" : 3,
-//           "author" : "bainesface",
-//           "votes": 0,
-//           "created_at": "2022-05-20T12:04:14.500Z"
-//         }
-//       ]
-//     }
-//   },
-//   "DELETE /api/comments/:comment_id": {
-//     "description": "deletes specified comment from the database",
-//     "parameters": ["comment_id"],
-//     "queries": [],
-//     "exampleResponse": {}
-//   },
-//   "GET /api/users": {
-//     "description":"serves an array of all users",
-//     "queries": [],
-//     "exampleResponse": [
-//       {
-//       "username": "mallionaire",
-//       "name": "haz",
-//       "avatar_url":
-//         "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-//       }
-//     ]
-//   }
-// }
-// `
-	)
+            )
         })
     });
 });
@@ -315,7 +186,7 @@ describe('GET /api/categories', () => {
             }
         })
     });
-
+    
     // test('405: responds with msg and allowed methods if incorrect method used', () => {
     //     return request(app).post('/api/categories')
     //     .expect(405)
@@ -349,7 +220,7 @@ describe('GET /api/reviews', () => {
             }
         })
     });
-
+    
     test('200: review objects have comment_count property', () => {
         return request(app).get('/api/reviews')
         .expect(200)
@@ -362,7 +233,7 @@ describe('GET /api/reviews', () => {
             }
         })
     });
-
+    
     test('200: reviews array should be ordered by date in descending order by default', () => {        
         return request(app).get('/api/reviews')
         .expect(200)
@@ -370,7 +241,7 @@ describe('GET /api/reviews', () => {
             expect(reviews).toBeSortedBy('created_at', {descending: true})
         })
     });
-
+    
     test('200: reviews array should be sorted by column name passed under sort_by query, in descending order by default', () => {
         return request(app).get('/api/reviews?sort_by=votes')
         .expect(200)
@@ -378,7 +249,7 @@ describe('GET /api/reviews', () => {
             expect(reviews).toBeSortedBy('votes', { descending : true})
         })
     });
-
+    
     test('200: reviews array should be sorted in order specified by order query', () => {
         return request(app).get('/api/reviews?order=asc')
         .expect(200)
@@ -386,7 +257,7 @@ describe('GET /api/reviews', () => {
             expect(reviews).toBeSortedBy('created_at')
         })
     });
-
+    
     test('200: reviews array should be filtered by specified category if category query passed', () => {
         return request(app).get('/api/reviews?category=social_deduction')
         .expect(200)
@@ -397,7 +268,7 @@ describe('GET /api/reviews', () => {
             }
         })
     });
-
+    
     test('200: queries show expected behaviour when chained together', () => {
         return request(app).get('/api/reviews?sort_by=review_id&order=asc&category=social_deduction')
         .expect(200)
@@ -419,7 +290,7 @@ describe('GET /api/reviews', () => {
             }
         })
     });
-
+    
     test('200: valid category query but no reviews', () => {
         return request(app).get('/api/reviews?category=children\'s games')
         .expect(200)
@@ -427,7 +298,7 @@ describe('GET /api/reviews', () => {
             expect(reviews).toEqual([])
         })
     })
-
+    
     test('400: invalid sort_by query', () => {
         return request(app).get('/api/reviews?sort_by=bananas')
         .expect(400)
@@ -435,7 +306,7 @@ describe('GET /api/reviews', () => {
             expect(msg).toBe('invalid sort_by query');
         })
     });
-
+    
     test('400: invalid order query', () => {
         return request(app).get('/api/reviews?order=bananas')
         .expect(400)
@@ -443,7 +314,7 @@ describe('GET /api/reviews', () => {
             expect(msg).toBe('invalid order query');
         })
     });
-
+    
     test('404: non-existent category', () => {
         return request(app).get('/api/reviews?category=bananas')
         .expect(404)
@@ -464,7 +335,7 @@ describe('GET /api/reviews/:review_id', () => {
                 designer: 'Leslie Scott',
                 owner: 'philippaclaire9',
                 review_img_url:
-                    'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
                 review_body: 'Fiddly fun for all the family',
                 category: 'dexterity',
                 created_at: '2021-01-18T10:01:41.251Z',
@@ -472,7 +343,7 @@ describe('GET /api/reviews/:review_id', () => {
             })
         })
     });
-
+    
     test('200: review object has commentCount property of number of comments with that review_id', () => {
         return request(app).get('/api/reviews/2')
         .expect(200)
@@ -480,7 +351,7 @@ describe('GET /api/reviews/:review_id', () => {
             expect(review).toHaveProperty('comment_count', 3);
         })
     });
-
+    
     test('400: responds with error message when incorrect data type used', () => {
         return request(app).get('/api/reviews/bananas')
         .expect(400)
@@ -488,15 +359,15 @@ describe('GET /api/reviews/:review_id', () => {
             expect(msg).toBe('invalid data type')
         })
     });
-
+    
     test('404: responds with error message when no data found for passed review_id', () => {
         return request(app).get('/api/reviews/-2')
         .expect(404)
         .then(({body: {msg}}) => {
-        expect(msg).toBe('no review found for id: -2')
-    })
+            expect(msg).toBe('no review found for id: -2')
+        })
     });
-
+    
     // test('405: responds with error message and allowed methods if invalid method used', () => {
     //     return request(app).post('/api/reviews/4')
     //     .expect(405)
@@ -521,7 +392,7 @@ describe('PATCH /api/reviews/:review_id', () => {
                 designer: 'Leslie Scott',
                 owner: 'philippaclaire9',
                 review_img_url:
-                    'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
                 review_body: 'Fiddly fun for all the family',
                 category: 'dexterity',
                 created_at: '2021-01-18T10:01:41.251Z',
@@ -529,14 +400,14 @@ describe('PATCH /api/reviews/:review_id', () => {
             })
         })
     });
-
+    
     test('404: responds with error message when no data found for passed review_id', () => {
         return request(app).patch('/api/reviews/600')
         .send({inc_votes: 2})
         .expect(404)
         .then(({body: {msg}}) => {
-        expect(msg).toBe('no review found for id: 600')
-    })
+            expect(msg).toBe('no review found for id: 600')
+        })
     });
     
     test('400: responds with error message when invalid data type for review_id', () => {
@@ -556,7 +427,7 @@ describe('PATCH /api/reviews/:review_id', () => {
             expect(msg).toBe('invalid data type')
         })
     });
-
+    
     test('400: responds with error message if inc_votes property not on req body', () => {
         return request(app).patch('/api/reviews/4')
         .send({ bananas: 'bananas' })
@@ -565,7 +436,7 @@ describe('PATCH /api/reviews/:review_id', () => {
             expect(msg).toBe('request must have inc_votes property');
         })
     });
-
+    
     test('400: responds with error message if any property other than inc_votes on req body', () => {
         return request(app).patch('/api/reviews/4')
         .send({ inc_votes: 20, bananas: 'bananas' })
@@ -594,7 +465,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
             }
         })
     }); 
-
+    
     test('404: responds with error message if passed review_id that does not correspond to a review', () => {
         return request(app).get('/api/reviews/60/comments')
         .expect(404)
@@ -602,7 +473,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
             expect(msg).toBe('no review found for id: 60')
         });
     });
-
+    
     test('400: responds with error message when invalid data type for review_id', () => {
         return request(app).get('/api/reviews/bananas/comments')
         .expect(400)
@@ -610,7 +481,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
             expect(msg).toBe('invalid data type')
         })
     });
-
+    
     test('200: responds with empty array if passed review_id corresponds to a review with no comments', () => {
         return request(app).get('/api/reviews/4/comments')
         .expect(200)
@@ -645,7 +516,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
             expect(msg).toBe('comment must include username and body keys')
         })
     });
-
+    
     test('404: responds with error message if passed review_id that does not correspond to a review', () => {
         return request(app).post('/api/reviews/60/comments')
         .send({username: 'mallionaire', body: 'never heard of it before'})
@@ -654,7 +525,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
             expect(msg).toBe('no review found for id: 60')
         });
     });
-
+    
     test('400: responds with error message if passed review_id is wrong data type', () => {
         return request(app).post('/api/reviews/bananas/comments')
         .send({username: 'mallionaire', body: 'never heard of it before'})
@@ -663,7 +534,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
             expect(msg).toBe('invalid data type')
         });
     });
-
+    
     test('404: responds with err msg if user not in the database tries to post', () => {
         return request(app).post('/api/reviews/4/comments')
         .send({username: 'definitelyNotAHacker', body: 'DROP DATABASE IF EXISTS be-nc-games;???'})
@@ -679,7 +550,7 @@ describe('DELETE /api/comments/:comment_id', () => {
         return request(app).delete('/api/comments/2')
         .expect(204);
     });
-
+    
     test('404: comment not found', () => {
         return request(app).delete('/api/comments/872')
         .expect(404)
@@ -687,7 +558,7 @@ describe('DELETE /api/comments/:comment_id', () => {
             expect(msg).toBe('no comment found for id: 872')
         })
     });
-
+    
     test('400: comment_id is not a number', () => {
         return request(app).delete('/api/comments/bananas')
         .expect(400)
