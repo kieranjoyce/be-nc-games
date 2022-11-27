@@ -8,7 +8,7 @@ Endpoints are also provided with handling for a variety of possible errors e.g. 
 Finally, the project is hosted as a heroku app with access to a production database.
 
 ## link to hosted version:
-*https://kierans-be-nc-games.herokuapp.com/api*
+*https://be-yellow-pieces.cyclic.app/api*
 
 # How to setup and run locally
 
